@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codegraph"
+version = "1.1.0"
+description = "Compiler-accurate code knowledge graph: extractors, Neo4j loader, log matcher and MCP server"
+requires-python = ">=3.10"
+dependencies = [
+    "neo4j>=5.20",
+    "pyyaml>=6.0",
+    "mcp>=1.2",
+    "libclang>=16.0",
+]
+
+[project.optional-dependencies]
+# orjson only speeds up JSONL parsing; everything works without it.
+fast = ["orjson>=3.9"]
+test = ["pytest>=8"]
+
+[tool.setuptools]
+# Flat layout: each top-level folder is an importable package.
+packages = [
+    "codegraph_common",
+    "loader",
+    "logmatch",
+    "mcp_server",
+    "codegraph_native",
+]
+
+[tool.setuptools.package-dir]
+codegraph_native = "extractors/native/codegraph_native"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "neo4j: needs a running Neo4j loaded with the fixture graph",
+    "dotnet: needs the .NET SDK to build and run the C# extractors",
+]

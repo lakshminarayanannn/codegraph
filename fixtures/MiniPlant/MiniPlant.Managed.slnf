@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "MiniPlant.sln",
+    "projects": [
+      "src\\MiniPlant.Core\\MiniPlant.Core.csproj",
+      "src\\MiniPlant.Services\\MiniPlant.Services.csproj",
+      "src\\MiniPlant.UI.Controls\\MiniPlant.UI.Controls.csproj",
+      "src\\MiniPlant.App\\MiniPlant.App.csproj",
+      "src\\MiniPlant.Tests\\MiniPlant.Tests.csproj"
+    ]
+  }
+}

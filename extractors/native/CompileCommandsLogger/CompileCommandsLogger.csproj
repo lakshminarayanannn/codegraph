@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- MSBuild logger that writes compile_commands.json from the CL task command lines (SPEC 6.1, option 2).
+       netstandard2.0 so Visual Studio's msbuild.exe (.NET Framework) can load it. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- MSBuild provides Microsoft.Build.Framework at run time: compile against it, never ship it. -->
+    <PackageReference Include="Microsoft.Build.Framework" Version="17.11.48" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

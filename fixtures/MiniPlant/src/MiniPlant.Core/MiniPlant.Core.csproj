@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="log4net" Version="3.5.0" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <!-- The C++/CLI wrapper only builds on Windows. Elsewhere a C# stand-in with the same
+       assembly name and public surface is used (see interop/MiniPlant.Interop.Sim). -->
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <ProjectReference Include="..\..\interop\MiniPlant.Interop\MiniPlant.Interop.vcxproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <ProjectReference Include="..\..\interop\MiniPlant.Interop.Sim\MiniPlant.Interop.Sim.csproj" />
+  </ItemGroup>
+</Project>

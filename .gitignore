@@ -1,0 +1,29 @@
+# Generated graph data and reports (never commit: may contain code-derived text)
+out/
+!out/.gitkeep
+
+# .NET build output
+bin/
+obj/
+*.user
+.vs/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Native build output (fixture)
+fixtures/MiniPlant/bin/
+x64/
+Debug/
+Release/
+
+# Local secrets / machine-specific overrides
+config/*.local.yaml
+.env
+
+# Benchmark transcripts contain code: never commit them
+bench/results/

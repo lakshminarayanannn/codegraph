@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Stand-in for interop/MiniPlant.Interop (C++/CLI) on machines without MSVC.
+       Same assembly name and public surface, so C# callers resolve to identical symbol IDs.
+       After the build, tests/tools/SimIjwRewriter rewrites the DLL into the IJW metadata shape
+       that the C++/CLI compiler produces (see StageWrapper.cs). Never used on Windows. -->
+  <PropertyGroup>
+    <AssemblyName>MiniPlant.Interop</AssemblyName>
+    <RootNamespace>MiniPlant.Interop</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+</Project>

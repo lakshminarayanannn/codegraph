@@ -1,0 +1,48 @@
+# Benchmark tasks (SPEC 11.3). Replace the examples with 30-40 real tasks agreed with a senior engineer.
+#
+# id:        unique, short
+# category:  orientation | impact | review | testing | debugging | architecture
+# prompt:    what the agent is asked; it must end its answer with a JSON block {"answer": [...]}
+# answer:    the agreed answer set (method fqns, file paths, assembly names...); compared case-insensitively
+# scoring:   set (precision/recall, default) | single (first correct item's rank)
+#
+# The examples below run against the MiniPlant fixture, so the harness can be tried end to end.
+
+tasks:
+  - id: fixture-orientation-native
+    category: orientation
+    prompt: >
+      In this repository, which native C++ functions can be reached when PiezoStage.Home() runs?
+      List their fully-qualified C++ names.
+    answer: ["MiniPlant::Native::NativeStage::Home", "MiniPlant::Native::NativeStageBase::Move", "MiniPlant::Native::NativeStage::Move",
+             "MiniPlant::Native::NativeStage::CheckLimits", "LogMessage"]
+
+  - id: fixture-impact-signature
+    category: impact
+    prompt: >
+      If IStage.Move(double) gains a second parameter, list every method (fully-qualified, C# style) whose code
+      must change, including implementations.
+    answer: ["MiniPlant.Core.IStage.Move", "MiniPlant.Core.StageBase.Move", "MiniPlant.Core.PiezoStage.Move",
+             "MiniPlant.Core.MotionController.MoveTo", "MiniPlant.Core.MotionController.MoveToAsync",
+             "MiniPlant.Core.MotionController.MoveThrough", "MiniPlant.Core.StageExtensions.MoveHome",
+             "MiniPlant.Tests.MotionControllerTests.MoveHome_ReturnsToZero"]
+
+  - id: fixture-testing-untested
+    category: testing
+    prompt: Which test methods exercise Recipe.Validate()? List them fully-qualified.
+    answer: ["MiniPlant.Tests.RecipeTests.Validate_RejectsEmptyRecipe"]
+
+  - id: fixture-debugging-log
+    category: debugging
+    scoring: single
+    prompt: >
+      A run logged "2026-10-04 10:11:12,345 [ERROR] Target 150.000 mm is outside the travel range". Which
+      function wrote it? Answer with the fully-qualified function name.
+    answer: ["MiniPlant::Native::NativeStage::Move"]
+
+  - id: fixture-architecture-layers
+    category: architecture
+    prompt: >
+      Layers from lowest to highest are native_interop, core, services, ui (see codegraph.yaml). Which assembly
+      references break that layering? Answer with "From -> To" strings.
+    answer: ["MiniPlant.Services -> MiniPlant.UI.Controls"]

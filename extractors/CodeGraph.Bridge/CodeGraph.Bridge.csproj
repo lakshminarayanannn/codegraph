@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Component C: C++/CLI bridge extractor (SPEC 7). Reads mixed-mode assemblies with the ILSpy engine. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ICSharpCode.Decompiler" Version="11.1.0.9782" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGraph.Shared\CodeGraph.Shared.csproj" />
+  </ItemGroup>
+</Project>

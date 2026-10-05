@@ -1,0 +1,16 @@
+<Project>
+  <!-- Shared settings for every C# project in the MiniPlant fixture.
+       The fixture targets .NET Framework 4.8 like the real codebase. Off Windows the
+       .NET SDK compiles it against the Microsoft.NETFramework.ReferenceAssemblies package. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- One output folder so the bridge and native extractors find every DLL in bin/. -->
+    <OutputPath>$(MSBuildThisFileDirectory)bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <NoWarn>$(NoWarn);CS0067;CS0169;CS0414;CS0649;NU1701</NoWarn>
+  </PropertyGroup>
+</Project>

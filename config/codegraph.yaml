@@ -1,0 +1,89 @@
+# =============================================================================
+# codegraph configuration: every codebase-specific decision lives here, not in code.
+#
+# * Relative paths are resolved against the folder that contains this file.
+# * Copy this file to config/codegraph.local.yaml (git-ignored) for machine-specific
+#   values, and pass --config config/codegraph.local.yaml to every command.
+# * Items marked ASK are conventions of the target codebase that a human must confirm.
+# * Secrets are never stored here: passwords are read from the environment variables
+#   named under `neo4j`.
+# =============================================================================
+
+repo_root: "D:/src/myproduct"
+solutions:
+  - "D:/src/myproduct/Main.sln"
+msbuild_properties:
+  Configuration: "Release"
+  Platform: "x64"
+max_compile_errors: 0              # gate: a project with more compile errors fails the run
+
+output_dir: "../out"               # extractors write here; the loader reads from here
+
+roslyn:
+  max_parallelism: 0               # documents bound in parallel; 0 = number of CPU cores
+  diagnostics: "fast"              # fast: parse + declaration errors + unresolved operations
+                                   # full: complete compile (accurate error count, ~2x slower)
+  exclude_projects: []             # project or assembly names (glob) to skip, e.g. ["*.Setup"]
+  prefer_target_framework: ""      # multi-targeted projects: which TFM to index, e.g. "net48"
+
+cppcli_assemblies:                 # managed DLLs built from /clr projects (component C input)
+  - path: "D:/src/myproduct/bin/x64/Release/StageInterop.dll"
+    source_dir: "D:/src/myproduct/src/StageInterop"   # optional: enables heuristic file:line
+
+native_dlls:                       # native DLLs built by the solution (exports -> RESOLVES_TO)
+  - "D:/src/myproduct/bin/x64/Release/StageNative.dll"
+
+native:
+  compdb: "../out/compile_commands.json"   # produced by extractors/native/make_compdb.ps1
+  target: "x86_64-pc-windows-msvc"         # MSVC target => MSVC-mangled names that match the bridge
+  extra_args: ["-fms-compatibility", "-fms-extensions", "-fdelayed-template-parsing", "-Wno-everything"]
+  exports_from: "dumpbin"                  # dumpbin (built DLLs) | source (__declspec(dllexport) + .def files)
+  modules: []                              # optional: [{name: StageNative, paths: ["src/StageNative/**"]}]
+                                           # default: name of the nearest .vcxproj above each file
+  max_workers: 0                           # parser processes; 0 = number of CPU cores
+
+log_methods:                       # ASK: the real list of logging APIs
+  # template_style: literal   -> the argument is printed verbatim (braces are literal text)
+  #                 composite -> the argument is a .NET composite format string ("{0}")
+  - { type_implements: "log4net.ILog", methods: ["Debug", "Info", "Warn", "Error", "Fatal"], template_arg: 0, level_from: "method", template_style: "literal" }
+  - { type_implements: "log4net.ILog", methods: ["DebugFormat", "InfoFormat", "WarnFormat", "ErrorFormat", "FatalFormat"], template_arg: 0, level_from: "method", template_style: "composite" }
+native_log_functions:              # ASK: native logging functions (after macro expansion)
+  - { name: "LogMessage", template_arg: 1, level_arg: 0 }
+
+config_accessors:                  # ASK: how configuration is read
+  - { member: "System.Configuration.ConfigurationManager.AppSettings", kind: "indexer" }
+
+test_attributes: []                # extra test attributes beyond the NUnit / MSTest / xUnit defaults
+test_assembly_patterns: ["*.Tests", "*.UnitTests", "*.IntegrationTests"]
+entry_point_attributes:            # ASK: plugin, command and scheduler attributes used in the codebase
+  - { attribute: "System.ServiceModel.OperationContractAttribute", kind: "remote" }
+ui_event_base_types: ["System.Windows.Forms.Control", "System.Windows.UIElement"]
+
+layers:                            # lower index = lower layer; a lower layer must not depend on a higher one
+  - { name: "native_interop", assemblies: ["*.Interop", "*.Native*"] }   # ASK: the intended layering
+  - { name: "core",           assemblies: ["*.Core", "*.Common"] }
+  - { name: "services",       assemblies: ["*.Services*"] }
+  - { name: "ui",             assemblies: ["*.UI*", "*.App"] }
+
+git_history:
+  window_days: 730
+  co_change_min: 5
+  co_change_max_files: 30
+
+log_prefix_regex: '^\d{4}-\d{2}-\d{2}[ T][\d:.,]+\s+\[\w+\]\s+'
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  database: "neo4j"
+  user_writer: "neo4j"
+  password_writer_env: "CODEGRAPH_NEO4J_PASSWORD"
+  user_reader: "codegraph_ro"
+  password_reader_env: "CODEGRAPH_NEO4J_RO_PASSWORD"   # unset => reader falls back to the writer account
+  home: ""                         # Neo4j install folder (has bin/neo4j-admin); empty = find on PATH
+  import_method: "admin"           # admin: neo4j-admin bulk import (fastest, restarts Neo4j)
+                                   # bolt:  batched online load (no restart, no admin rights needed)
+
+limits:
+  max_depth: 8
+  max_results: 200
+  query_timeout_s: 15

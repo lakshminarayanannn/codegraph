@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MiniPlant.Core\MiniPlant.Core.csproj" />
+    <ProjectReference Include="..\MiniPlant.Services\MiniPlant.Services.csproj" />
+  </ItemGroup>
+</Project>
