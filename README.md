@@ -9,6 +9,7 @@ Everything runs locally. No embeddings and no model calls anywhere in indexing; 
 a metadata reader or a documented rule, and carries `file:line` (or an IL offset) and a confidence.
 
 The full specification is [SPEC.md](SPEC.md). Decisions and verification status: [docs/DECISIONS.md](docs/DECISIONS.md).
+Research on what beats grep for coding agents, and the next-step plan: [docs/research/](docs/research/README.md).
 First run on the real codebase: [docs/RUNBOOK_WINDOWS.md](docs/RUNBOOK_WINDOWS.md).
 
 ```
